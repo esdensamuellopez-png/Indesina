@@ -1,0 +1,25 @@
+{
+  "name": "LOESINA — Asistencia RFID",
+  "short_name": "LOESINA",
+  "description": "Sistema Inteligente de Asistencia con RFID",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0b1623",
+  "background_color": "#020609",
+  "lang": "es-MX",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

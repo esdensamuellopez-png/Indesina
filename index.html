@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+  <meta name="theme-color" content="#0b1623"/>
+  <meta name="description" content="LOESINA v4 — Sistema Inteligente de Asistencia con RFID"/>
+  <title>LOESINA v4 — Asistencia RFID</title>
+
+  <link rel="manifest" href="manifest.webmanifest"/>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/animations.css"/>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <span id="clock">9:41</span>
+    <div class="notch"></div>
+    <div class="status-icons">
+      <svg width="14" height="11" viewBox="0 0 14 11" fill="none" aria-hidden="true">
+        <rect x="0" y="5" width="2.5" height="6" rx=".8" fill="var(--text3)"/>
+        <rect x="3.5" y="3" width="2.5" height="8" rx=".8" fill="var(--text3)"/>
+        <rect x="7" y="1" width="2.5" height="10" rx=".8" fill="var(--accent)"/>
+        <rect x="10.5" y="0" width="2.5" height="11" rx=".8" fill="var(--accent)"/>
+      </svg>
+      <div class="battery"><div class="battery-fill" id="battFill"></div></div>
+    </div>
+  </div>
+
+  <div class="screens">
+
+    <!-- SPLASH -->
+    <section id="screen-splash" class="screen active" aria-label="Pantalla de inicio">
+      <div class="splash-container">
+        <div class="splash-logo">
+          <div class="pulse-ring">
+            <div class="logo-box">
+              <svg width="54" height="54" viewBox="0 0 46 46" fill="none" aria-hidden="true">
+                <rect x="4" y="12" width="38" height="25" rx="5" stroke="#ccfbf1" stroke-width="2.2" fill="none"/>
+                <line x1="4" y1="21" x2="42" y2="21" stroke="#ccfbf1" stroke-width="2"/>
+                <rect x="8" y="25" width="12" height="5" rx="2" fill="#ccfbf1" opacity=".45"/>
+                <circle cx="37" cy="10" r="7" fill="var(--accent-deep)" stroke="#ccfbf1" stroke-width="2"/>
+                <path d="M34 10l2.3 2.3 3.7-3.7" stroke="#ccfbf1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <h1 class="splash-title">LOESINA</h1>
+        <p class="splash-subtitle">Sistema Inteligente de Asistencia</p>
+        <div class="splash-loader">
+          <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+          <p class="loader-text" id="loaderText">Iniciando...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WELCOME (sin botón demo) -->
+    <section id="screen-welcome" class="screen" aria-label="Bienvenida">
+      <div class="welcome-container">
+        <div class="welcome-hero">
+          <div class="pulse-ring">
+            <div class="logo-box">
+              <svg width="46" height="46" viewBox="0 0 46 46" fill="none" aria-hidden="true">
+                <rect x="4" y="12" width="38" height="25" rx="5" stroke="#ccfbf1" stroke-width="2.2" fill="none"/>
+                <line x1="4" y1="21" x2="42" y2="21" stroke="#ccfbf1" stroke-width="2"/>
+                <rect x="8" y="25" width="12" height="5" rx="2" fill="#ccfbf1" opacity=".45"/>
+                <circle cx="37" cy="10" r="7" fill="var(--accent-deep)" stroke="#ccfbf1" stroke-width="2"/>
+                <path d="M34 10l2.3 2.3 3.7-3.7" stroke="#ccfbf1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="welcome-text">
+            <h1 class="welcome-title">LOESINA</h1>
+            <p class="welcome-subtitle">
+              Sistema Inteligente de Asistencia<br/>con Credencial RFID
+            </p>
+          </div>
+          <span class="version-pill">v4.0</span>
+        </div>
+        <div class="welcome-actions">
+          <button class="btn btn-primary btn-lg" onclick="App.go('login')">Iniciar Sesión</button>
+          <button class="btn btn-outline" onclick="App.go('register')">Crear Cuenta</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOGIN -->
+    <section id="screen-login" class="screen" aria-label="Iniciar sesión">
+      <header class="topbar-simple">
+        <button class="back-btn" onclick="App.back()" aria-label="Volver" id="backLogin"></button>
+      </header>
+      <div class="content fadein">
+        <div class="auth-header">
+          <h1>Bienvenido</h1>
+          <p>Accede con tu cuenta docente</p>
+        </div>
+
+        <label class="field">
+          <span>Correo electrónico</span>
+          <input class="inp" id="loginEmail" type="email" placeholder="docente@escuela.edu.mx" autocomplete="email" inputmode="email"/>
+        </label>
+
+        <label class="field">
+          <span>Contraseña</span>
+          <div class="inp-with-action">
+            <input class="inp" id="loginPass" type="password" placeholder="Mínimo 6 caracteres" autocomplete="current-password"/>
+            <button type="button" class="inp-eye" onclick="Auth.togglePass('loginPass')" aria-label="Mostrar contraseña"></button>
+          </div>
+        </label>
+
+        <div class="forgot">
+          <span onclick="Toast.info('Contacta a tu administrador')">¿Olvidaste tu contraseña?</span>
+        </div>
+
+        <button class="btn btn-primary btn-lg" onclick="Auth.login()">Iniciar Sesión</button>
+
+        <p class="auth-switch">
+          ¿Sin cuenta? <span class="link" onclick="App.go('register')">Regístrate</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- REGISTER -->
+    <section id="screen-register" class="screen" aria-label="Registro">
+      <header class="topbar-simple">
+        <button class="back-btn" onclick="App.back()" aria-label="Volver" id="backRegister"></button>
+      </header>
+      <div class="content fadein">
+        <div class="auth-header">
+          <h1>Crear Cuenta</h1>
+          <p>Registro de nuevo docente</p>
+        </div>
+
+        <label class="field">
+          <span>Nombre completo</span>
+          <input class="inp" id="regName" type="text" placeholder="Mtro. Daniel Rivera" autocomplete="name"/>
+        </label>
+
+        <label class="field">
+          <span>Plantel / Escuela</span>
+          <input class="inp" id="regSchool" type="text" placeholder="CONALEP Plantel..."/>
+        </label>
+
+        <label class="field">
+          <span>Correo electrónico</span>
+          <input class="inp" id="regEmail" type="email" placeholder="docente@escuela.edu.mx" inputmode="email"/>
+        </label>
+
+        <label class="field">
+          <span>Contraseña</span>
+          <div class="inp-with-action">
+            <input class="inp" id="regPass" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password"/>
+            <button type="button" class="inp-eye" onclick="Auth.togglePass('regPass')" aria-label="Mostrar contraseña"></button>
+          </div>
+        </label>
+
+        <div class="password-strength" id="pwStrength"></div>
+
+        <label class="field">
+          <span>Confirmar contraseña</span>
+          <input class="inp" id="regPass2" type="password" placeholder="Repite tu contraseña" autocomplete="new-password"/>
+        </label>
+
+        <button class="btn btn-primary btn-lg" onclick="Auth.register()">Crear Cuenta</button>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="screen-dashboard" class="screen" aria-label="Panel principal">
+      <header class="dash-header">
+        <div class="dash-user">
+          <div id="dashAvatar" class="avatar-lg" aria-hidden="true"></div>
+          <div class="dash-user-info">
+            <p class="dash-name" id="dashName"></p>
+            <p class="dash-school" id="dashSchool"></p>
+          </div>
+        </div>
+        <div class="dash-actions">
+          <button onclick="App.go('notifications')" id="btnNotifs" class="btn-icon btn-icon-ghost notif-btn" aria-label="Notificaciones">
+            <span class="notif-dot" id="notifDot" hidden></span>
+          </button>
+          <button onclick="App.go('settings')" id="btnSettings" class="btn-icon btn-icon-ghost" aria-label="Configuración"></button>
+        </div>
+      </header>
+
+      <p class="dash-greeting" id="dashGreeting"></p>
+
+      <div class="dash-stats" id="dashStats"></div>
+
+      <div class="section-hdr">
+        <h3>Mis Grupos</h3>
+        <span id="classCount" class="count-chip">0</span>
+      </div>
+
+      <main class="content" id="dashClasses" aria-label="Lista de grupos"></main>
+
+      <footer class="footer">
+        <button class="btn btn-primary btn-lg" id="btnAddClass" onclick="Modals.openAddClass()">
+          <span id="addClassIcon"></span> Agregar Grupo
+        </button>
+        <div class="footer-row">
+          <button class="btn btn-ghost ai-btn" onclick="App.go('analytics')">
+            <span id="analyticsIcon"></span> Análisis IA
+          </button>
+          <button class="btn btn-ghost lesi-btn" onclick="App.go('lesi')">
+            <span id="lesiBtnIcon"></span> LESI
+          </button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- CLASS -->
+    <section id="screen-class" class="screen" aria-label="Detalle del grupo">
+      <header class="topbar">
+        <button class="back-btn" onclick="App.back()" id="backClass" aria-label="Volver"></button>
+        <div class="topbar-title">
+          <h2 id="classTitle"></h2>
+          <p id="classSub"></p>
+        </div>
+        <button onclick="Modals.openAddClass(App.currentClassId)" class="btn-icon btn-icon-ghost" id="btnEditClass" aria-label="Editar grupo"></button>
+      </header>
+
+      <div class="tab-row" role="tablist">
+        <button class="tab-btn active" id="tab-list" onclick="Classes.setTab('list')" role="tab">Lista</button>
+        <button class="tab-btn" id="tab-grid" onclick="Classes.setTab('grid')" role="tab">Tarjetas</button>
+        <button class="tab-btn" id="tab-stats" onclick="Classes.setTab('stats')" role="tab">Estadísticas</button>
+      </div>
+
+      <div class="search-wrap">
+        <span class="search-icon" id="searchIcon" aria-hidden="true"></span>
+        <input class="inp search-inp" id="stuSearch" placeholder="Buscar por nombre, matrícula..." oninput="Classes.search(this.value)" aria-label="Buscar alumno"/>
+      </div>
+
+      <main class="content" id="classContent"></main>
+
+      <footer class="footer">
+        <button class="btn btn-primary btn-lg" onclick="Attendance.openSession()">
+          <span id="startAttIcon"></span> Iniciar Pase de Lista
+        </button>
+        <div class="footer-row">
+          <button class="btn btn-ghost btn-small" onclick="Modals.openAddStudent()">
+            <span id="addStuIcon"></span> Alumno
+          </button>
+          <button class="btn btn-ghost btn-small" onclick="Classes.exportClass()">
+            <span id="exportIcon"></span> CSV
+          </button>
+          <button class="btn btn-danger btn-small btn-icon-only" onclick="Classes.deleteCurrentClass()" aria-label="Eliminar grupo">
+            <span id="deleteClassIcon"></span>
+          </button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ATTENDANCE -->
+    <section id="screen-attendance" class="screen screen-att" aria-label="Pase de lista">
+      <header class="att-header">
+        <button class="back-btn" onclick="Attendance.closeSession()" id="backAtt" aria-label="Cerrar sesión"></button>
+        <div class="att-header-title">
+          <h2>Pase de Lista</h2>
+          <p id="attSubtitle"></p>
+        </div>
+        <div id="attTimer" class="att-timer" aria-live="polite">00:00</div>
+      </header>
+
+      <div class="conn-bar">
+        <div class="conn-info">
+          <div class="conn-dot" id="attConnDot" aria-hidden="true"></div>
+          <span id="attConnTxt">Desconectado</span>
+        </div>
+        <div class="conn-type-switch" role="group" aria-label="Tipo de conexión">
+          <button class="conn-type-btn active" id="typeWifi" onclick="RFID.setType('wifi')">WiFi</button>
+          <button class="conn-type-btn" id="typeBle" onclick="RFID.setType('ble')">BLE</button>
+        </div>
+        <button class="btn btn-small btn-ghost btn-connect" id="btnConnect" onclick="RFID.toggle()">Conectar</button>
+      </div>
+
+      <div class="att-counters" role="group" aria-label="Contadores de asistencia">
+        <div class="counter counter-present">
+          <div class="counter-num" id="cntPresent">0</div>
+          <div class="counter-lbl">Presentes</div>
+        </div>
+        <div class="counter counter-late">
+          <div class="counter-num" id="cntLate">0</div>
+          <div class="counter-lbl">Tarde</div>
+        </div>
+        <div class="counter counter-absent">
+          <div class="counter-num" id="cntAbsent">0</div>
+          <div class="counter-lbl">Ausentes</div>
+        </div>
+      </div>
+
+      <div class="att-progress">
+        <div class="progress-label">
+          <span id="rfidCount">0/0</span>
+          <span id="rfidPercent">0%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <main class="att-grid-wrap">
+        <div id="scanLine" aria-hidden="true"></div>
+        <div class="att-grid" id="attGrid" aria-label="Alumnos"></div>
+      </main>
+
+      <footer class="att-footer">
+        <div class="att-actions-row">
+          <button class="btn-mini" onclick="Attendance.markAllPresent()" title="Todos presentes" aria-label="Marcar todos presentes">
+            <span id="markAllIcon"></span>
+          </button>
+          <button class="btn-mini" onclick="Attendance.resetSession()" title="Reiniciar" aria-label="Reiniciar">
+            <span id="resetIcon"></span>
+          </button>
+          <button class="btn-mini" onclick="RFID.simulate()" title="Simular" aria-label="Simular escaneo">
+            <span id="simIcon"></span>
+          </button>
+          <button class="btn-mini" onclick="Attendance.exportSession()" title="Exportar" aria-label="Exportar">
+            <span id="exportAttIcon"></span>
+          </button>
+          <button class="btn btn-primary btn-save" onclick="Attendance.closeSession()">
+            <span id="saveIcon"></span> Guardar
+          </button>
+        </div>
+      </footer>
+    </section>
+
+    <!-- LESI -->
+    <section id="screen-lesi" class="screen screen-lesi" aria-label="Asistente LESI">
+      <header class="lesi-header">
+        <button class="back-btn" onclick="App.back()" id="backLesi" aria-label="Volver"></button>
+        <div class="lesi-avatar" id="lesiIcon" aria-hidden="true"></div>
+        <div class="lesi-info">
+          <p class="lesi-name">LESI <span class="lesi-badge">IA</span></p>
+          <p class="lesi-sub">Tu asistente educativa</p>
+        </div>
+        <button class="btn-icon btn-icon-ghost" onclick="LESI.reset()" id="lesiReset" aria-label="Nueva conversación"></button>
+      </header>
+
+      <main class="chat-messages" id="chatMessages" aria-live="polite"></main>
+
+      <div class="quick-chips" id="quickChips">
+        <button class="quick-chip" onclick="LESI.chip('Muéstrame un resumen de mi asistencia esta semana')">Resumen semanal</button>
+        <button class="quick-chip" onclick="LESI.chip('¿Qué alumnos están en riesgo?')">Alumnos en riesgo</button>
+        <button class="quick-chip" onclick="LESI.chip('¿Cómo conecto el ESP32?')">Ayuda RFID</button>
+        <button class="quick-chip" onclick="LESI.chip('Consejos para mejorar asistencia')">Consejos</button>
+      </div>
+
+      <div class="chat-input-bar">
+        <textarea id="chatInput" class="chat-inp" placeholder="Pregunta a LESI..." rows="1"
+                  onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();LESI.send()}"
+                  aria-label="Mensaje a LESI"></textarea>
+        <button id="sendBtn" class="send-btn" onclick="LESI.send()" disabled aria-label="Enviar"></button>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section id="screen-analytics" class="screen" aria-label="Análisis con IA">
+      <header class="topbar">
+        <button class="back-btn" onclick="App.back()" id="backAnalytics" aria-label="Volver"></button>
+        <div class="topbar-title">
+          <h2>Análisis IA</h2>
+          <p>Reportes inteligentes</p>
+        </div>
+        <button class="btn-icon btn-icon-ghost" id="btnAnRefresh" onclick="Analytics.renderContent()" aria-label="Actualizar"></button>
+      </header>
+
+      <div class="tab-row" role="tablist">
+        <button class="tab-btn active" data-an-tab="overview" onclick="Analytics.setTab('overview')" role="tab">Resumen</button>
+        <button class="tab-btn" data-an-tab="risk" onclick="Analytics.setTab('risk')" role="tab">Riesgo</button>
+        <button class="tab-btn" data-an-tab="report" onclick="Analytics.setTab('report')" role="tab">Reporte</button>
+      </div>
+
+      <main class="content" id="anContent"></main>
+    </section>
+
+    <!-- NOTIFICATIONS -->
+    <section id="screen-notifications" class="screen" aria-label="Notificaciones">
+      <header class="topbar">
+        <button class="back-btn" onclick="App.back()" id="backNotif" aria-label="Volver"></button>
+        <div class="topbar-title">
+          <h2>Notificaciones</h2>
+          <p id="notifCount">0 nuevas</p>
+        </div>
+        <button class="btn btn-small btn-ghost btn-auto" onclick="Notifications.markAllRead()">
+          Marcar leídas
+        </button>
+      </header>
+      <main class="content" id="notifContent"></main>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="screen-settings" class="screen" aria-label="Configuración">
+      <header class="topbar">
+        <button class="back-btn" onclick="App.back()" id="backSettings" aria-label="Volver"></button>
+        <div class="topbar-title">
+          <h2>Configuración</h2>
+          <p>Ajustes del sistema</p>
+        </div>
+      </header>
+      <main class="content" id="settingsContent"></main>
+      <footer class="footer">
+        <button class="btn btn-danger" onclick="Auth.logout()">
+          <span id="logoutIcon"></span> Cerrar Sesión
+        </button>
+      </footer>
+    </section>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODALES
+══════════════════════════════════════ -->
+
+<!-- Modal: Grupo -->
+<div id="modal-addclass" class="modal-overlay" onclick="if(event.target===this)Modals.close('addclass')" role="dialog" aria-labelledby="addClassTitle">
+  <div class="modal-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <h3 class="modal-title" id="addClassTitle">Nuevo Grupo</h3>
+
+    <label class="field">
+      <span>Nombre del grupo</span>
+      <input class="inp" id="mc-name" placeholder="Ej. 207 INFORMÁTICA" maxlength="40"/>
+    </label>
+
+    <label class="field">
+      <span>Materia</span>
+      <input class="inp" id="mc-subject" placeholder="Ej. Informática" maxlength="40"/>
+    </label>
+
+    <label class="field">
+      <span>Horario y aula</span>
+      <input class="inp" id="mc-schedule" placeholder="Lun-Vie 8:00-9:00 · Aula 207" maxlength="50"/>
+    </label>
+
+    <div class="field">
+      <span>Color identificador</span>
+      <div class="color-row" id="colorRow" role="radiogroup" aria-label="Color del grupo"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="Modals.close('addclass')">Cancelar</button>
+      <button class="btn btn-primary" id="btnSaveClass" onclick="Classes.saveClass()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Alumno (con foto y matrícula) -->
+<div id="modal-addstudent" class="modal-overlay" onclick="if(event.target===this)Modals.close('addstudent')" role="dialog" aria-labelledby="stuModalTitle">
+  <div class="modal-sheet">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <h3 class="modal-title" id="stuModalTitle">Agregar Alumno</h3>
+
+    <!-- Foto -->
+    <div class="photo-upload-wrap">
+      <div id="photoPreview" class="photo-preview">
+        <span class="photo-placeholder"></span>
+      </div>
+      <div class="photo-actions">
+        <input type="file" id="photoInput" accept="image/*" capture="user" hidden onchange="Modals.loadPhoto(this)"/>
+        <button type="button" class="btn btn-ghost btn-small" onclick="document.getElementById('photoInput').click()">
+          Subir foto
+        </button>
+        <button type="button" class="btn btn-danger btn-small" onclick="Modals.removePhoto()">
+          Quitar
+        </button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="field field-small">
+        <span>No.</span>
+        <input class="inp" id="ms-num" type="number" placeholder="1" min="1" inputmode="numeric"/>
+      </label>
+      <label class="field field-grow">
+        <span>Matrícula</span>
+        <input class="inp" id="ms-matricula" placeholder="Ej. 250540174-1" maxlength="20"/>
+      </label>
+    </div>
+
+    <label class="field">
+      <span>Nombre completo</span>
+      <input class="inp" id="ms-name" placeholder="Apellidos NOMBRE" maxlength="80" style="text-transform:uppercase"/>
+    </label>
+
+    <label class="field">
+      <span>UID de credencial RFID (opcional)</span>
+      <div class="inp-with-action">
+        <input class="inp" id="ms-uid" placeholder="A1B2C3D4 o escanea..." style="text-transform:uppercase"/>
+        <button class="inp-action" onclick="Modals.triggerScan()" id="scanUidBtn">Escanear</button>
+      </div>
+      <div id="uidHint" class="hint hint-success" hidden>
+        UID capturado: <strong id="uidFound"></strong>
+      </div>
+    </label>
+
+    <label class="field">
+      <span>Notas (opcional)</span>
+      <input class="inp" id="ms-notes" placeholder="Ej. Beca, atención especial, etc." maxlength="100"/>
+    </label>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="Modals.close('addstudent')">Cancelar</button>
+      <button class="btn btn-primary" id="stuSaveBtn" onclick="Classes.saveStudent()">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Confirmar -->
+<div id="modal-confirm" class="modal-overlay" onclick="if(event.target===this)Modals.close('confirm')" role="alertdialog" aria-labelledby="confirmTitle">
+  <div class="modal-sheet modal-small">
+    <div class="modal-handle" aria-hidden="true"></div>
+    <h3 class="modal-title" id="confirmTitle">¿Confirmar?</h3>
+    <p class="modal-desc" id="confirmMsg"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="Modals.close('confirm')">Cancelar</button>
+      <button class="btn btn-danger" id="confirmOk">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<div class="desktop-hint">
+  <span>Diseñado para móvil · Abre en tu celular o usa DevTools</span>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script src="js/icons.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/initial-data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/toast.js"></script>
+<script src="js/modals.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/classes.js"></script>
+<script src="js/attendance.js"></script>
+<script src="js/rfid.js"></script>
+<script src="js/lesi.js"></script>
+<script src="js/analytics.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/init.js"></script>
+
+</body>
+</html>
